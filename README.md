@@ -1,0 +1,2 @@
+# emc
+Estadistica Multivariada Computacional
