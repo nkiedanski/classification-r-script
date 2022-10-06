@@ -37,3 +37,10 @@ Q_JC
 eigen(Q_SM)
 
 eigen(Q_JC)
+
+nombres <- c("leon", "girafa", "vaca","obeja", "gato", "hombre")
+plot(x=eigen(Q_SM)$vector[,1],y=eigen(Q_SM)$vector[,2], 
+     xlim=c(-0.5,1),xlab="Y1", ylab="Y2")
+text(x=eigen(Q_SM)$vector[,1],y=eigen(Q_SM)$vector[,2], 
+     labels=nombres, cex = 0.6, pos = 4, col = "red")
+
