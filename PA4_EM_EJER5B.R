@@ -15,4 +15,25 @@ data
 library(clusterSim)
 
 #Matriz de distancia al cuadrado:
-D2 <- as.matrix(2* dist.binary(data, method=2, diag=T,upper=T) ^2)
+D2_Sokal_Michener <- as.matrix(2*dist.binary(data, method=2, diag=T,upper=T) ^2)
+D2_Sokal_Michener
+
+D2_Jaccard <- as.matrix(2*dist.binary(data, method=1, diag=T,upper=T) ^2)
+D2_Jaccard
+
+# P = In − 1/n II', siendo n el conjunto de puntos, en este caso 6.
+P <- diag(1,6)-1/6*rep(1,6)%*%t(rep(1,6))
+P
+
+
+# matriz de similaridades Q
+Q_SM <- -0.5 * P%*%D2_Sokal_Michener%*%P
+Q_SM
+
+Q_JC <- -0.5 * P%*%D2_Jaccard%*%P
+Q_JC
+
+# Computes eigenvalues and eigenvectors of complex matrices.
+eigen(Q_SM)
+
+eigen(Q_JC)
