@@ -18,4 +18,14 @@ data <- matrix(c(0,458,469,331,411,350,309,349,456,501,262,519,104,496,180,438,1
 371,226,347,199,194,364,98,339,149,249,359,192,281,139,394,248,225,0,235,
 348,126,136,38,90,137,285,109,180,167,172,236,316,259,257,93,218,235,0), ncol=19)
 
+colnames(data) <- c("Artigas", "Canelones", "Colonia", "Durazno", "Florida",
+                    "Fray Bentos", "Melo", "Mercedes", "Minas", "Montevideo", "Paysandú", 
+                    "Maldonado", "Rivera", "Rocha", "Salto", "San José", "Tacuarembó", "Treinta y Tres", "Trinidad")
+rownames(data) <- c("Artigas", "Canelones", "Colonia", "Durazno", "Florida",
+                    "Fray Bentos", "Melo", "Mercedes", "Minas", "Montevideo", "Paysandú", 
+                    "Maldonado", "Rivera", "Rocha", "Salto", "San José", "Tacuarembó", "Treinta y Tres", "Trinidad")
+
 data
+
+fit <- cmdscale(d=sqrt(data),eig=TRUE, k=2)
+fit
