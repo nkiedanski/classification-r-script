@@ -35,6 +35,7 @@ Q_JC
 
 # Computes eigenvalues and eigenvectors of complex matrices.
 eigen(Q_SM)
+# todos los valores propios dieron no negativos, entonces Q es semipositiva
 
 eigen(Q_JC)
 

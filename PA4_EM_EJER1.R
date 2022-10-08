@@ -1,4 +1,4 @@
-data <- matrix(c(0,458,469,331,411,350,309,349,456,501,262,519,104,496,180,438,153,371,348
+D <- matrix(c(0,458,469,331,411,350,309,349,456,501,262,519,104,496,180,438,153,371,348
 ,458,0,143,129,48,242,309,214,97,43,296,128,407,178,382,45,313,226,126
 ,469,143,0,171,155,154,412,136,239,159,239,268,449,321,342,104,350,347,136
 ,331,129,171,0,84,170,247,141,162,172,187,222,290,236,260,108,192,199,38
@@ -18,14 +18,53 @@ data <- matrix(c(0,458,469,331,411,350,309,349,456,501,262,519,104,496,180,438,1
 371,226,347,199,194,364,98,339,149,249,359,192,281,139,394,248,225,0,235,
 348,126,136,38,90,137,285,109,180,167,172,236,316,259,257,93,218,235,0), ncol=19)
 
-colnames(data) <- c("Artigas", "Canelones", "Colonia", "Durazno", "Florida",
+colnames(D) <- c("Artigas", "Canelones", "Colonia", "Durazno", "Florida",
                     "Fray Bentos", "Melo", "Mercedes", "Minas", "Montevideo", "Paysandú", 
                     "Maldonado", "Rivera", "Rocha", "Salto", "San José", "Tacuarembó", "Treinta y Tres", "Trinidad")
-rownames(data) <- c("Artigas", "Canelones", "Colonia", "Durazno", "Florida",
+rownames(D) <- c("Artigas", "Canelones", "Colonia", "Durazno", "Florida",
                     "Fray Bentos", "Melo", "Mercedes", "Minas", "Montevideo", "Paysandú", 
                     "Maldonado", "Rivera", "Rocha", "Salto", "San José", "Tacuarembó", "Treinta y Tres", "Trinidad")
 
-data
+D
 
-fit <- cmdscale(d=sqrt(data),eig=TRUE, k=2)
+# HACIENDO CALCULO ALGEBRAICO
+
+# Se obtiene la matriz de distancias al cuadrado: D2 = 2(1n1'n − S)
+D2 <- 2 * (rep(1,19)%*%t(rep(1,19))-D)
+D2
+
+# P = In − 1/n 1n1'n, siendo n el conjunto de puntos, en este caso 19.
+P <- diag(1,19)-1/19*rep(1,19)%*%t(rep(1,19))
+P
+
+# matriz de similaridades Q
+Q <- -0.5 * P%*%D2%*%P
+Q
+
+# Hay que distinguir si Q es semidefinida positiva (todos los VAP son no 
+# negativos) o no (algun VAP es negativo)
+eigen(Q)
+# Hay valores propios negativos, entonces no es semidefinida positiva, hago transformacion o aproximacion.
+# HAGO APROXIMACION CON 1ER VAP (unico positivo)
+
+Y <- eigen(Q)$vector[,1]*sqrt(eigen(Q)$values[1])
+Y
+
+Qaprox <- Y%*%t(Y)
+Qaprox
+
+# ---------------------------------------------------------------------------------------------
+
+# USANDO LA FUNCION CMD
+# fit <- cmdscale(d=sqrt(D),eig=TRUE, k=2) si me hubiese dado el cuadrado, uso la funcion sqrt()
+fit <- cmdscale(D,eig=TRUE, k=2)
 fit
+
+# Una medida de la precision conseguida mediante la aproximacion a partir de los VAP
+# positivos de la matriz de similitud es el coeficiente dado por el coeficiente de Mardia:
+# Si es mayor que 0.8, la aproximacion es buena (coef.Mardia = (VAP utilizados)/sum todos VAPs)
+
+mardia <- (fit$eig[1]+fit$eig[2])/sum(fit$eig)
+mardia
+
+# Como dio 1.03 es buena la aproximacion
