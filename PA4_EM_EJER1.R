@@ -30,8 +30,11 @@ D
 # HACIENDO CALCULO ALGEBRAICO
 
 # Se obtiene la matriz de distancias al cuadrado: D2 = 2(1n1'n − S)
-D2 <- 2 * (rep(1,19)%*%t(rep(1,19))-D)
+# D2 <- 2 * (rep(1,19)%*%t(rep(1,19))-D) - ESTO NO ME FUNCIONO!
+
+D2 <- D^2
 D2
+
 
 # P = In − 1/n 1n1'n, siendo n el conjunto de puntos, en este caso 19.
 P <- diag(1,19)-1/19*rep(1,19)%*%t(rep(1,19))
