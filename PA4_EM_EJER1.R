@@ -50,13 +50,14 @@ eigen(Q)
 # Hay valores propios negativos, entonces no es semidefinida positiva, hago transformacion o aproximacion.
 
 # Ur tiene como columnas los vectores propios asociados a los r valores propios conservados
-#U
+U <- eigen(Q)$vectors[,1:10]
+U
 
 # Λ es la matriz diagonal que contiene a los valores propios de Q positivos:
 Λ <- diag(c(eigen(Q)$values[1:10]))
 Λ
 
-Y <- U*sqrt(Λ)
+Y <- U %*% sqrt(Λ)
 Y
 
 Qaprox <- Y%*%t(Y)
