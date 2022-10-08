@@ -48,9 +48,15 @@ Q
 # negativos) o no (algun VAP es negativo)
 eigen(Q)
 # Hay valores propios negativos, entonces no es semidefinida positiva, hago transformacion o aproximacion.
-# HAGO APROXIMACION CON 1ER VAP (unico positivo)
 
-Y <- eigen(Q)$vector[,1]*sqrt(eigen(Q)$values[1])
+# Ur tiene como columnas los vectores propios asociados a los r valores propios conservados
+#U
+
+# Λ es la matriz diagonal que contiene a los valores propios de Q positivos:
+Λ <- diag(c(eigen(Q)$values[1:10]))
+Λ
+
+Y <- U*sqrt(Λ)
 Y
 
 Qaprox <- Y%*%t(Y)
