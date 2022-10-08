@@ -30,3 +30,4 @@ eigen(Q_SM)
 # todos los valores propios dieron no negativos, entonces Q es semipositiva
 
 eigen(Q_JC)
+# no todos los VAP dieron no negativos, entonces Q no es semipositivo
