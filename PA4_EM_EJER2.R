@@ -3,6 +3,7 @@ D <- matrix(c(1, 1, 0, 0, 1, 1,
               1, 0, 0, 1, 0, 1), ncol = 6)
 D
 
+# install.packages("clusterSim")
 library(clusterSim)
 
 #Matriz de distancia al cuadrado:
