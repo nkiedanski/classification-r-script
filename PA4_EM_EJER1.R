@@ -78,3 +78,10 @@ mardia <- (fit$eig[1]+fit$eig[2])/sum(fit$eig)
 mardia
 
 # Como dio 1.03 es buena la aproximacion
+
+# plot solution
+x <- fit$points[,1]
+y <- fit$points[,2]
+plot(x, y, pch=19, xlab="Coordinate 1", ylab="Coordinate 2",
+     main="Metric MDS", type="p")
+text(x, y, pos=4, labels = row.names(D), cex=.7)
