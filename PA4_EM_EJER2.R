@@ -1,6 +1,10 @@
 D <- matrix(c(1, 1, 0, 0, 1, 1,
               1, 1, 1, 0, 0, 1, 
               1, 0, 0, 1, 0, 1), ncol = 6)
+
+colnames(D) <- c("x1", "x2", "x3", "x4", "x5", "x6")
+rownames(D) <- c("x1", "x2", "x3")
+
 D
 
 # install.packages("clusterSim")
@@ -31,3 +35,9 @@ eigen(Q_SM)
 
 eigen(Q_JC)
 # no todos los VAP dieron no negativos, entonces Q no es semipositivo
+
+nombres <- rownames(D)
+plot(x=eigen(Q_SM)$vector[,1],y=eigen(Q_SM)$vector[,2], 
+     xlim=c(-1,2),xlab="Y1", ylab="Y2")
+text(x=eigen(Q_SM)$vector[,1],y=eigen(Q_SM)$vector[,2], 
+     labels=nombres, cex = 0.6, pos = 4, col = "red")
