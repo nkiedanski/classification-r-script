@@ -49,32 +49,39 @@ Q
 eigen(Q)
 # Hay valores propios negativos, entonces no es semidefinida positiva, hago transformacion o aproximacion.
 
+# En este caso se hace aproximación
 # Ur tiene como columnas los vectores propios asociados a los r valores propios conservados
-U <- eigen(Q)$vectors[,1:10]
-U
+Ur <- eigen(Q)$vectors[,1:10]
+Ur
 
 # Λ es la matriz diagonal que contiene a los valores propios de Q positivos:
-Λ <- diag(c(eigen(Q)$values[1:10]))
-Λ
+Λr <- diag(c(eigen(Q)$values[1:10]))
+Λr
 
-Y <- U %*% sqrt(Λ)
+Y <- Ur %*% sqrt(Λr)
 Y
 
-Qaprox <- Y%*%t(Y)
-Qaprox
+# se consideran las dos primeras columnas de Y que vienen a ser las dos 
+# componentes principales para graficar el biplot
+
+nombres <- c("Artigas", "Canelones", "Colonia", "Durazno", "Florida",
+              "Fray Bentos", "Melo", "Mercedes", "Minas", "Montevideo", "Paysandú", 
+              "Maldonado", "Rivera", "Rocha", "Salto", "San José", "Tacuarembó", "Treinta y Tres", "Trinidad")
+plot(x=Y[,1],y=Y[,2], xlim=c(-200,400),xlab="Y1", ylab="Y2")
+text(x=Y[,1],y=Y[,2], xlim=c(-200,400), labels=nombres, cex = 0.6, pos = 4, col = "red")
 
 # ---------------------------------------------------------------------------------------------
 
 # USANDO LA FUNCION CMD
 # fit <- cmdscale(d=sqrt(D),eig=TRUE, k=2) si me hubiese dado el cuadrado, uso la funcion sqrt()
-fit <- cmdscale(D,eig=TRUE, k=2)
+fit <- cmdscale(d=sqrt(D2),eig=TRUE, k=2)
 fit
 
 # Una medida de la precision conseguida mediante la aproximacion a partir de los VAP
 # positivos de la matriz de similitud es el coeficiente dado por el coeficiente de Mardia:
 # Si es mayor que 0.8, la aproximacion es buena (coef.Mardia = (VAP utilizados)/sum todos VAPs)
 
-mardia <- (fit$eig[1]+fit$eig[2])/sum(fit$eig)
+mardia <- (fit$eig[1]+fit$eig[2])/sum(fit$eig[1:10])
 mardia
 
 # Como dio 1.03 es buena la aproximacion
