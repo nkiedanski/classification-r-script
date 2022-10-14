@@ -36,6 +36,7 @@ eigen(Q_SM)
 eigen(Q_JC)
 # no todos los VAP dieron no negativos, entonces Q no es semipositivo
 
+# plot de Q_SM
 nombres <- rownames(D)
 plot(x=eigen(Q_SM)$vector[,1],y=eigen(Q_SM)$vector[,2], 
      xlim=c(-1,2),xlab="Y1", ylab="Y2")

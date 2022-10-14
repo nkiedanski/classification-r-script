@@ -30,7 +30,7 @@ D
 # HACIENDO CALCULO ALGEBRAICO
 
 # Se obtiene la matriz de distancias al cuadrado: D2 = 2(1n1'n − S)
-# D2 <- 2 * (rep(1,19)%*%t(rep(1,19))-D) - ESTO NO ME FUNCIONO!
+# D2 <- 2 * (rep(1,19)%*%t(rep(1,19))-D) - ESTO SOLO CUANDO SE TIENE MATRIZ DE SIMILITUDES!
 
 D2 <- D^2
 D2
