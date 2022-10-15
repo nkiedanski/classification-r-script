@@ -74,3 +74,4 @@ eigen(Q_JC_transf)
 Q_JC_transf2 <- Q_JC + transformation
 
 eigen(Q_JC_transf2)
+
