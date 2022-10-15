@@ -45,3 +45,41 @@ plot(x=eigen(Q_SM)$vector[,1],y=eigen(Q_SM)$vector[,2],
 text(x=eigen(Q_SM)$vector[,1],y=eigen(Q_SM)$vector[,2], 
      labels=nombres, cex = 0.6, pos = 4, col = "red")
 
+# parte 3) se agrega el elefante al conjunto de animales
+
+vector_elefante <- c(1,0,0,0,0,1)
+data_nuevo <- rbind(data, "elefante"=vector_elefante)
+data_nuevo
+
+# se calcula nuevamente la matriz de distancias al cuadrado:
+D2_Sokal_Michener_nuevo <- as.matrix(2*dist.binary(data_nuevo, method=2, diag=T,upper=T) ^2)
+D2_Sokal_Michener_nuevo
+
+# obtencion de coordenadas principales del elefante x= 0.5 λ^(-1)Y'(q-d) donde q = diag(Q)
+
+q <- diag(Q_SM)
+q
+
+d <- D2_Sokal_Michener_nuevo[1:6,7]
+d
+
+substraction <- q - d
+substr_colm <- matrix(substraction, byrow= FALSE)
+substr_colm
+
+# 𝚲 es la matriz diagonal con los VAP
+λ <- diag(eigen(Q_SM)$values, 6)
+λ
+
+# Y = U λ^(1/2) donde U es la matriz formada por los VEP asociados a VAP no nulos de Q.
+# Q tiene todos los valores propios >=0.
+
+U <- matrix(eigen(Q_SM)$vector, nrow = 6, ncol = 6)
+U
+
+Y <- U %*% sqrt(λ)
+Y
+
+elefante_coord <- 0.5 *solve(λ, tol = 1e-19) %*% t(Y) %*% substr_colm
+elefante_coord
+
