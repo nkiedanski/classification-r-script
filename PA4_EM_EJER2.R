@@ -47,7 +47,7 @@ text(x=eigen(Q_SM)$vector[,1],y=eigen(Q_SM)$vector[,2],
 # se hace el corrimiento de las distancias que surge sumar una constante c 
 # (que sea mayor o igual que 2|λ| siendo λ el VAP negativo con valor absoluto maximo).
 
-# se obtiene la constante c, 2 veces el mayor VAP
+# se obtiene la constante c, 2 veces el mayor VAP negativo
 c <- -(eigen(Q_JC)$values[3]*2)
 c
 
@@ -63,9 +63,6 @@ transformation
 # Se hace transformacion sobre la matriz de distancias D2
 D2_Jaccard_transf <- D2_Jaccard + transformation
 D2_Jaccard_transf
-
-eigen(D2_Jaccard_transf)
-# Esta opcion no es!!!
 
 # se obtiene matriz de similaridades Q transformada
 Q_JC_transf <- -0.5 * P%*%D2_Jaccard_transf%*%P
