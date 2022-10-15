@@ -83,3 +83,5 @@ Y
 elefante_coord <- 0.5 *solve(λ, tol = 1e-19) %*% t(Y) %*% substr_colm
 elefante_coord
 
+# Me quedo con las 2 primeras componentes principales que son las que irian al plot
+elefante_coord[1:2]
