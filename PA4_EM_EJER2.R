@@ -50,11 +50,14 @@ text(x=eigen(Q_SM)$vector[,1],y=eigen(Q_SM)$vector[,2],
 # se obtiene la constante c, 2 veces el mayor VAP negativo
 c <- -(eigen(Q_JC)$values[3]*2)
 c
+nuevo_c <- max(abs(eigen(Q_JC)$values))*2
+nuevo_c
 
-diag_c <- diag(c, 3)
+
+diag_c <- diag(nuevo_c, 3)
 diag_c
 
-rep_c <- matrix(data = c, nrow = 3, ncol = 3)
+rep_c <- matrix(data = nuevo_c, nrow = 3, ncol = 3)
 rep_c
 
 transformation <- rep_c - diag_c
@@ -70,7 +73,7 @@ Q_JC_transf
 
 eigen(Q_JC_transf)
 
-# se hace la transformacion sobre la matriz de similiaridades
+# se hace la transformacion sobre la matriz de similiaridades, esto NO esta bien! NO hacer!
 Q_JC_transf2 <- Q_JC + transformation
 
 eigen(Q_JC_transf2)
