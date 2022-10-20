@@ -34,7 +34,7 @@ eigen(Q_SM)
 # todos los valores propios dieron no negativos, entonces Q es semipositiva
 
 eigen(Q_JC)
-# no todos los VAP dieron no negativos, entonces Q no es semipositivo
+# no todos los VAP dieron NO negativos, entonces Q no es semipositivo.
 
 # plot de Q_SM con los componentes principales
 nombres <- rownames(D)
@@ -43,21 +43,22 @@ plot(x=eigen(Q_SM)$vector[,1],y=eigen(Q_SM)$vector[,2],
 text(x=eigen(Q_SM)$vector[,1],y=eigen(Q_SM)$vector[,2], 
      labels=nombres, cex = 0.6, pos = 4, col = "red")
 
-# para la distancia de Jaccard tengo que hacer la transformacion o aproximacion
-# se hace el corrimiento de las distancias que surge sumar una constante c 
+# Pense que para la distancia de Jaccard tenia que hacer la transformacion o aproximacion
+# se hace el corrimiento de las distancias que surge al sumar una constante c 
 # (que sea mayor o igual que 2|λ| siendo λ el VAP negativo con valor absoluto maximo).
+
+# Al final la transformacion no era necesaria porque el VAP negativo es muuuuy chico, 
+# -1.110223e-16, entonces es una aproximacion de 0, no se considera negativo, no hay que hacer aproximacion.
+# si se hiciera, seria asi:
 
 # se obtiene la constante c, 2 veces el mayor VAP negativo
 c <- -(eigen(Q_JC)$values[3]*2)
 c
-nuevo_c <- max(abs(eigen(Q_JC)$values))*2
-nuevo_c
 
-
-diag_c <- diag(nuevo_c, 3)
+diag_c <- diag(c, 3)
 diag_c
 
-rep_c <- matrix(data = nuevo_c, nrow = 3, ncol = 3)
+rep_c <- matrix(data = c, nrow = 3, ncol = 3)
 rep_c
 
 transformation <- rep_c - diag_c
