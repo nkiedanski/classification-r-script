@@ -1,6 +1,6 @@
 D <- matrix(c(1, 1, 0, 0, 1, 1,
               1, 1, 1, 0, 0, 1, 
-              1, 0, 0, 1, 0, 1), ncol = 6)
+              1, 0, 0, 1, 0, 1), ncol = 6, byrow=TRUE)
 
 colnames(D) <- c("x1", "x2", "x3", "x4", "x5", "x6")
 rownames(D) <- c("x1", "x2", "x3")
