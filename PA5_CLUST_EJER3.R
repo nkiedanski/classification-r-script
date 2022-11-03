@@ -1,5 +1,3 @@
-#install.packages("NbClust")
-#install.packages("factoextra")
 library(factoextra)
 library(NbClust)
 
