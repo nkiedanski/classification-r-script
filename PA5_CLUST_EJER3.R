@@ -8,6 +8,7 @@ c2 = 20
 # se aplica k-means
 cl = kmeans(x, c(c1, c2))
 cat("La inercia intra Clusters cuando k = 2 es: ", cl$tot.withinss)
+#las asignaciones a los clusters están contenidas en cl$cluster
 plot(x, col = cl$cluster, main = "K-Means Clustering Results with K = 2",
      xlab = "", ylab = "")
 points(cl$centers, col = 1:2, pch = 8, cex = 2)
