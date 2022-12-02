@@ -140,3 +140,77 @@ predict(glm.fits,
         newdata = data.frame(Lag1 = c(1.2 , 1.5) , Lag2 = c(1.1 , -0.8)),
         type = "response")
 
+# ---------------------------------------------------------------------------------------------------------------------
+
+# LINEAR DISCRIMINAN ANALYSIS (LDA)
+
+# En R ajustamos un modelo LDA utilizando la función lda(), que forma parte de la biblioteca MASS. 
+# La sintaxis de la función lda() es idéntica a la deglm() excepto por la ausencia de la opción de familia. 
+# Ajustamos el modelo usando sólo las observaciones anteriores a 2005.
+
+library(MASS)
+lda.fit <- lda(Direction ~ Lag1 + Lag2 , data = Smarket, subset = train)
+lda.fit
+plot(lda.fit)
+" La salida LDA indica que π1 = 0.492 y π2 = 0.508; en otras palabras,el 49,2% de 
+las observaciones de entrenamiento corresponden a días en los que el mercado bajó. 
+También proporciona las medias del grupo; estos son el promedio de cada predictor dentro de cada clase, 
+y son utilizados por LDA como estimaciones de μk. Estos sugieren que hay una tendencia de los 2 días anteriores a
+ser negativos en los días en que el mercado sube, y una tendencia para el los rendimientos de los 2 dias anteriores 
+a ser positivos en los días en que el mercado cae. Los coeficientes de salida de discriminantes lineales proporcionan
+la combinación lineal de Lag1 y Lag2 que se utilizan para formar la regla de decisión LDA. 
+Si −0,642 × Lag1 − 0,514 × Lag2 es grande, entonces el clasificador LDA predecirá un aumento del mercado, 
+y si es pequeño, entonces el clasificador LDA predecirá un caída del mercado.
+La función plot() produce gráficos de los discriminantes lineales, obtenidos
+calculando −0.642×Lag1−0.514×Lag2 para cada una de las observaciones de entrenamiento.
+Las observaciones de Arriba y Abajo se muestran por separado."
+
+" La función predecir() devuelve una lista con tres elementos. El primer elemento,
+clase, contiene las predicciones de LDA (DOWN/ UP) sobre el movimiento del mercado para cada 250 observacion.
+El segundo elemento, posterior, es una matriz cuya columna k-ésima contiene la
+probabilidad a posteriori de que la observación correspondiente pertenezca a la k-ésima
+clase. Finalmente, x contiene los discriminantes lineales, descritos anteriormente."
+lda.pred <- predict(lda.fit , Smarket.2005)
+names(lda.pred)
+lda.class <- lda.pred$class
+table(lda.class, Direction.2005)
+mean(lda.class == Direction.2005)
+" the LDA and logistic regression predictions are almost identical"
+lda.class
+
+" Aplicar un umbral del 50% a las probabilidades a posteriori nos permite recrear
+las predicciones contenidas en lda.pred$class."
+sum(lda.pred$posterior[, 1] >= .5)
+sum(lda.pred$posterior[, 1] < .5)
+" Escrita de esta forma la salida de probabilidad posterior del modelo corresponde 
+a la probabilidad de que el mercado disminuya"
+lda.pred$posterior[1:20, 1]
+lda.class[1:20]
+
+"Si quisiéramos usar un umbral de probabilidad posterior diferente al 50%
+para hacer predicciones, entonces podríamos hacerlo fácilmente. Por ejemplo, supongamos
+que deseamos predecir una disminución del mercado solo si estamos muy seguros de que
+el mercado disminuirá ese día, es decir, si la probabilidad posterior es al menos el 90 %."
+sum(lda.pred$posterior[, 1] > .9)
+
+# ---------------------------------------------------------------------------------------------------------------------
+
+# QUADRATIC DISCRIMINAN ANALYSIS (QDA)
+
+"QDA está implementado en R utilizando la función qda(), que también forma parte 
+de la biblioteca MASS. La sintaxis es idéntica a la de lda()."
+qda.fit <- qda(Direction ~ Lag1 + Lag2 , data = Smarket, subset = train)
+qda.fit
+"La salida contiene las medias del grupo. Pero no contiene los coeficientes
+de los discriminantes lineales, porque el clasificador QDA implica un
+función cuadrática, en lugar de lineal, de los predictores. La predicción ()
+funciona exactamente de la misma manera que para LDA."
+qda.class <- predict(qda.fit , Smarket.2005)$class
+table(qda.class , Direction.2005)
+mean(qda.class == Direction.2005)
+"Curiosamente, las predicciones de QDA son precisas casi el 60% del tiempo,
+a pesar de que los datos de 2005 no se utilizaron para ajustar el modelo. Este nivel de precisión
+es bastante impresionante para los datos del mercado de valores, que se sabe que son bastante
+difícil de modelar con precisión. Esto sugiere que la forma cuadrática asumida
+por QDA puede capturar la verdadera relación con mayor precisión que las formas
+linealies asumidas por LDA y regresión logística."
