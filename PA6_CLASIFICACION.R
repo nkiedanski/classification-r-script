@@ -245,3 +245,117 @@ La función predecir () también puede generar estimaciones de la probabilidad
 que cada observación pertenece a una clase particular."
 nb.preds <- predict(nb.fit , Smarket.2005, type = "raw")
 nb.preds[1:5, ]
+
+# ---------------------------------------------------------------------------------------------------------------------
+
+# K-NEAREST NEIGHBORS (KNN)
+
+ "En lugar de un enfoque en 2 pasos donde en el que primero ajustamos el modelo y luego usamos el modelo para hacer
+predicciones, knn() forma predicciones usando un solo comando. 
+La función requiere cuatro entradas.
+1. Una matriz que contiene los predictores asociados con los datos de entrenamiento, etiquetado train.X 
+2. Una matriz que contiene los predictores asociados con los datos para los cuales deseamos hacer predicciones, etiquetadas como test.X 
+3. Un vector que contiene las etiquetas para las observaciones de entrenamiento, train.Directions
+4. Un valor para K, el número de vecinos más cercanos que utilizará el clasificador
+
+Usamos la función cbind(), para enlazar las variables Lag1 y Lag2 en dos matrices, una para el conjunto de entrenamiento y la
+otro para el conjunto de prueba." 
+"(recordamos que train ya estaba definido por los valores de la columna Year < 2005)"
+library(class)
+train.X <- cbind(Lag1 , Lag2)[train , ]
+test.X <- cbind(Lag1 , Lag2)[!train , ]
+train.Direction <- Direction[train]
+
+"Ahora la función knn() se puede usar para predecir el movimiento del mercado para
+las fechas en 2005. Establecemos una RANDOM SEED antes de aplicar knn() porque si varias observaciones están empatadas 
+como vecinos más cercanos, entonces R rompe el empate aleatoriamente. Por lo tanto, se debe establecer una semilla 
+para garantizar la reproducibilidad de resultados"
+
+set.seed (1)
+knn.pred <- knn(train.X, test.X, train.Direction , k = 1)
+table(knn.pred , Direction.2005)
+(83 + 43) / 252
+"El porcentaje de observaciones bien clasificadas es del 50%"
+"Los resultados usando K = 1 no son muy buenos, ya que solo el 50% de las observaciones se predicen correctamente. 
+Por supuesto, puede ser que K = 1 resulte en un ajuste excesivamente flexible a los datos. 
+A continuación, repetimos el análisis usando K = 3."
+knn.pred <- knn(train.X, test.X, train.Direction , k = 3)
+table(knn.pred , Direction.2005)
+mean(knn.pred == Direction.2005)
+"Los resultados han mejorado ligeramente. Pero aumentar mas K, no mejora los resultados"
+
+"Como ejemplo, aplicaremos el enfoque KNN al conjunto de datos de Caravan, que forma parte de la biblioteca ISLR2. 
+Este conjunto de datos incluye 85 predictores que miden las características demográficas de 5.822 individuos.
+La variable de respuesta es Compra, que indica si un determinado individuo compra una póliza de seguro de caravana. 
+En este conjunto de datos, sólo el 6% de las personas compraron un seguro de caravana."
+dim(Caravan)
+attach(Caravan)
+summary(Purchase)
+
+"Debido a que el clasificador KNN predice la clase de una observación dada por las observaciones más cercanas a él, 
+la escala de las variables importa. Las variables que son de gran escala tendrán un efecto mucho mayor
+en la distancia entre las observaciones, y por lo tanto en el clasificador KNN, que las variables que son 
+de pequeña escala. Por ejemplo, un conjunto de datos que contiene dos variables, salario y edad (medida en dólares y años,
+respectivamente). En lo que respecta a KNN, una diferencia de $1,000 en salario es enorme en comparación 
+con una diferencia de 50 años de edad. Como consecuencia, salario impulsará los resultados de la clasificación KNN, 
+y la edad tendrá casi sin efecto. Esto es contrario a nuestra intuición de que una diferencia salarial de $1,000
+es bastante pequeña en comparación con una diferencia de edad de 50 años. Además, La importancia de la escala 
+para el clasificador KNN lleva a otro problema: si salario medido en yenes japoneses, o si medimos la edad en minutos, 
+entonces obtendríamos resultados de clasificación bastante diferentes de los que obtenemos si estas 2 variables 
+se miden en dólares y años. Una buena manera de manejar este problema es ESTANDARIZAR los datos para que todas las 
+variables tengan una media de cero y una desviación estándar de uno. Después todas las variables estarán 
+en una ESCALA COMPARABLE. La función scale() solo hace esto. 
+Al estandarizar los datos, excluimos la columna 86, porque esa es la variable cualitativa Compra."
+standardized.X <- scale(Caravan[, -86])
+var(Caravan[, 1])
+var(Caravan[, 2])
+var(standardized.X[, 1])
+var(standardized.X[, 2])
+"Ahora cada columna de standarized.X tiene una desviación estándar de uno y una media de cero.
+
+Ahora dividimos las observaciones en un conjunto de prueba, que contiene los primeros 1000
+observaciones, y un conjunto de entrenamiento, que contiene las observaciones restantes.
+Ajustamos un modelo KNN con los datos de entrenamiento usando K = 1, y evaluamos su rendimiento en los datos de prueba."
+test <- 1:1000
+"La prueba del vector es numérica, con valores de 1 a 1, 000"
+train.X <- standardized.X[-test, ]
+test.X <- standardized.X[test, ]
+train.Y <- Purchase[-test]
+test.Y <- Purchase[test]
+"Con standarized.X[test, ] produce la submatriz de los datos que contienen las observaciones cuyos índices 
+oscilan entre 1 y 1.000, mientras que escribir standarized.X[-test, ] produce la submatriz que contiene las observaciones
+cuyos índices no van de 1 a 1.000."
+set.seed (1)
+knn.pred <- knn(train.X, test.X, train.Y, k = 1)
+mean(test.Y != knn.pred)
+"El ERROR RATE KNN en el 1000 observaciones de prueba es poco menos del 12%."
+mean(test.Y != "No")
+
+"En cambio, la fracción de individuos que están correctamente pronosticados para comprar un seguro es de interés."
+table(knn.pred , test.Y)
+9 / (68 + 9)
+"Usando K = 3, la tasa de éxito aumenta al 19 %, y con K = 5 la tasa es 26,7 %."
+knn.pred <- knn(train.X, test.X, train.Y, k = 3)
+table(knn.pred , test.Y)
+5 / 26
+knn.pred <- knn(train.X, test.X, train.Y, k = 5)
+table(knn.pred , test.Y)
+4 / 15
+
+
+"Como comparación, también podemos ajustar un modelo de REGRESION LOGISTICA a los datos.
+Si usamos 0.5 como el corte de probabilidad pronosticado para el clasificador, entonces tenemos un problema: 
+se predice que solo siete de las observaciones de prueba compran el seguro. Peor aún, 
+¡nos equivocamos en todo esto! Sin embargo, no estamos obligados a utilizar un límite de 0,5. 
+Si en cambio predecimos una compra cada vez que la probabilidad de compra predicha excede 0.25, obtenemos mucho
+mejores resultados: predecimos que 33 personas comprarán un seguro, y son correctos para alrededor del 33% de estas personas."
+glm.fits <- glm(Purchase ~ ., data = Caravan, family = binomial , subset = -test)
+glm.probs <- predict(glm.fits, Caravan[test , ], type = "response ")
+glm.pred <- rep("No", 1000)
+glm.pred[glm.probs > .5] <- "Yes"
+table(glm.pred , test.Y)
+
+glm.pred <- rep("No", 1000)
+glm.pred[glm.probs > .25] <- "Yes"
+table(glm.pred , test.Y)
+11 / (22 + 11)
