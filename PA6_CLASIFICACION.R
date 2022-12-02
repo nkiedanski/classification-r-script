@@ -214,3 +214,34 @@ es bastante impresionante para los datos del mercado de valores, que se sabe que
 difícil de modelar con precisión. Esto sugiere que la forma cuadrática asumida
 por QDA puede capturar la verdadera relación con mayor precisión que las formas
 linealies asumidas por LDA y regresión logística."
+
+# ---------------------------------------------------------------------------------------------------------------------
+
+# NAIVE BAYES
+"Naive Bayes se implementa en R usando la función naiveBayes(), que es parte de
+la biblioteca e1071. La sintaxis es idéntica a la de lda() y qda(). Por defecto, 
+la implementacion del clasificador Bayes modela cada característica cuantitativa
+utilizando una distribución gaussiana. Sin embargo, un método de densidad kernel puede
+también se puede utilizar para estimar las distribuciones."
+library(e1071)
+nb.fit <- naiveBayes(Direction ~ Lag1 + Lag2 , data = Smarket, subset = train)
+nb.fit
+"La salida contiene la media estimada (primer columna) y la desviación estándar 
+(segunda columna) para cada variable en cada clase. 
+Por ejemplo, la media de Lag1 es 0.0428 para Dirección=Down, y la desviación estándar es 1.23
+Esto se puede verificar fasilmente"
+mean(Lag1[train][Direction[train] == "Down"])
+sd(Lag1[train][Direction[train] == "Down"])
+
+"La función predict() es sencilla:"
+nb.class <- predict(nb.fit , Smarket.2005)
+table(nb.class , Direction.2005)
+mean(nb.class == Direction.2005)
+"Naive Bayes funciona muy bien con estos datos, con predicciones precisas sobre
+59% del tiempo. Esto es ligeramente peor que QDA, pero mucho mejor que
+LDA.
+
+La función predecir () también puede generar estimaciones de la probabilidad
+que cada observación pertenece a una clase particular."
+nb.preds <- predict(nb.fit , Smarket.2005, type = "raw")
+nb.preds[1:5, ]
