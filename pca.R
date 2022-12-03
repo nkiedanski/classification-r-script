@@ -19,9 +19,13 @@ pr.out$rotation # las columnas continen los vectores propios
 summary(pr.out) # la importancia de cada componente
 biplot(pr.out,scale=0) # se pone scale=0 para asegurar que las flechas están escaladas para representar las cargas
 "ANALISIS: 
-- los puntos más cercanos al (0,0) son los que tienen valores más parecidas al promedio
-- mayor ángulo mayor incorrelación, a menor ángulo más correlación. 
-- Ángulo recto significa incorrelacionadas."
+- los puntos más cercanos al origen (0,0) son los que tienen valores más parecidas al promedio, poco llamativos.
+- Cuanto mas chiquito sea el angulo, mas se correlacionan entre si, ademas como la correlacion es positiva
+cuando una aumenta la otra tambien aumenta.
+- Ángulo recto significa que las variables no se correlacionan entre si, 
+- Cuando el angulo es mas que recto, son bastante independientes y ademas como la correlacion es negativa, 
+cuando una aumenta, la otra disminuye,
+- Cuando estan una sobre el otro, es que tienen la misma influencia."
 
 "Algunos datos que nos pueden interesar de cada componente principal"
 pr.out$sdev # desviacion estandar
