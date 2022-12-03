@@ -20,8 +20,7 @@ plot(Volume)
 # modelo de regresión logística para predecir la "Dirección" usando Lag1 a Lag5 y Volumen. 
 # La función glm() se usa para ajustar muchos tipos de modelos lineales generalizados, incluida la regresión logística. 
 # Se debe pasar el argumento family = binomial para decirle a R que ejecute una regresion logística
-glm.fits = glm(Direction ~ Lag1 + Lag2 + Lag3 + Lag4 + Lag5 + Volume ,
-  data = Smarket , family = binomial)
+glm.fits = glm(Direction ~ Lag1 + Lag2 + Lag3 + Lag4 + Lag5 + Volume, data = Smarket , family = binomial)
 
 summary(glm.fits)
 # El valor p más pequeño aca está asociado con Lag1 (0.145). 
@@ -41,8 +40,8 @@ summary(glm.fits)$coef[, 4]
 # La función predict() se puede utilizar para predecir la probabilidad de que el mercado subirá, 
 # dados los valores de los predictores. La opcion type = "response" le dice a R que genere 
 # probabilidades de la forma P(Y = 1|X), a diferencia de otra información como el logit. 
-# Si no se proporciona ningún conjunto de datos a la función predict (), 
-# luego se calculan las probabilidades para los datos de entrenamiento que se utilizaron para ajustar el modelo de regresión logística.
+# Si no se proporciona ningún conjunto de datos a la función predict (), luego se calculan las probabilidades 
+# para los datos de entrenamiento que se utilizaron para ajustar el modelo de regresión logística.
 glm.probs <- predict(glm.fits , type = "response")
 # se imprimen solo las 10 primeras probabilidades
 glm.probs[1:10]
@@ -76,7 +75,7 @@ mean(glm.pred == Direction)
 # que adivinar al azar. Sin embargo, este resultado es engañoso porque entrenamos y probamos el modelo 
 # en el mismo conjunto de 1250 observaciones.
 # En otras palabras, 100% − 52,2% = 47,8%, es el error de entrenamiento.
-# Para mejorevaluar la precisión del modelo de regresión logística en este escenario, podemos ajustar el modelo 
+# Para mejor evaluar la precisión del modelo de regresión logística en este escenario, podemos ajustar el modelo 
 # usando parte de los datos y luego examinar qué tan bien predice los datos retenidos. 
 # Esto producirá una tasa de error más realista, en el sentido que en la práctica estaremos interesados 
 # en el rendimiento de nuestro modelo no en los datos que usamos para ajustar el modelo, sino en días en el futuro 
@@ -139,6 +138,38 @@ mean(glm.pred == Direction.2005)
 predict(glm.fits,
         newdata = data.frame(Lag1 = c(1.2 , 1.5) , Lag2 = c(1.1 , -0.8)),
         type = "response")
+
+# ---------------------------------------------------------------------------------------------------------------------
+
+#OTRA FORMA DE PARTIR LA MUESTRA PARA TRAIN Y TEST:
+library(caret)
+trainIndex<-createDataPartition(Direction,p=0.8,list=FALSE,times=1)
+#como primer argumento de la función "createDataPartition" ponemos la variable que queremos predecir,
+#en segundo lugar el porcentaje de datos que queremos usar para el train, el tercer
+#argumento se pone FALSE para que no me lo convierta en lista.
+Smarket_train<-Smarket[trainIndex,]
+Smarket_test<-Smarket[-trainIndex,]
+glm.fit<-glm(Direction~Lag1+Lag2, data = Smarket_train, family = binomial)
+glm.probs<-predict(glm.fit,Smarket_test,type="response")
+glm.pred<-rep("Down",249)
+glm.pred[glm.probs>.5]<-"Up"
+table(glm.pred,Smarket_test$Direction)
+mean(glm.pred==Smarket_test$Direction)
+mean(glm.pred!=Smarket_test$Direction)
+
+# ---------------------------------------------------------------------------------------------------------------------
+
+# ROC CURVE
+# documentacion: https://www.rdocumentation.org/packages/pROC/versions/1.18.0/topics/roc
+# ejemplo: https://daviddalpiaz.github.io/r4sl/logistic-regression.html#roc-curves
+
+library(pROC)
+glm.probs = predict(glm.fit,Smarket_test,type="response")
+glm_roc = roc(Smarket_test$Direction ~ glm.probs, plot = TRUE, print.auc = TRUE )
+
+#test_prob = predict(model_glm, newdata = default_tst, type = 'response')
+#test_roc = roc(default_tst$default ~ test_prob, plot = TRUE, print.auc = TRUE)
+
 
 # ---------------------------------------------------------------------------------------------------------------------
 
@@ -284,6 +315,7 @@ table(knn.pred , Direction.2005)
 mean(knn.pred == Direction.2005)
 "Los resultados han mejorado ligeramente. Pero aumentar mas K, no mejora los resultados"
 
+"CON OTRO SET DE DATOS"
 "Como ejemplo, aplicaremos el enfoque KNN al conjunto de datos de Caravan, que forma parte de la biblioteca ISLR2. 
 Este conjunto de datos incluye 85 predictores que miden las características demográficas de 5.822 individuos.
 La variable de respuesta es Compra, que indica si un determinado individuo compra una póliza de seguro de caravana. 
@@ -317,7 +349,7 @@ Ahora dividimos las observaciones en un conjunto de prueba, que contiene los pri
 observaciones, y un conjunto de entrenamiento, que contiene las observaciones restantes.
 Ajustamos un modelo KNN con los datos de entrenamiento usando K = 1, y evaluamos su rendimiento en los datos de prueba."
 test <- 1:1000
-"La prueba del vector es numérica, con valores de 1 a 1, 000"
+"Se crea un vector numerico, con valores de 1 a 1, 000"
 train.X <- standardized.X[-test, ]
 test.X <- standardized.X[test, ]
 train.Y <- Purchase[-test]
@@ -341,7 +373,6 @@ table(knn.pred , test.Y)
 knn.pred <- knn(train.X, test.X, train.Y, k = 5)
 table(knn.pred , test.Y)
 4 / 15
-
 
 "Como comparación, también podemos ajustar un modelo de REGRESION LOGISTICA a los datos.
 Si usamos 0.5 como el corte de probabilidad pronosticado para el clasificador, entonces tenemos un problema: 
