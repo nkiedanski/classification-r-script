@@ -17,7 +17,9 @@ pr.out
 pr.out$rotation # las columnas continen los vectores propios
 
 summary(pr.out) # la importancia de cada componente
-biplot(pr.out,scale=0) # se pone scale=0 para asegurar que las flechas están escaladas para representar las cargas
+biplot(pr.out,scale=0) # se grafican las primeras 2 componentes principales. 
+#Se pone scale=0 para asegurar que las flechas están escaladas para representar las cargas
+
 "ANALISIS: 
 - los puntos más cercanos al origen (0,0) son los que tienen valores más parecidas al promedio, poco llamativos.
 - Cuanto mas chiquito sea el angulo, mas se correlacionan entre si, ademas como la correlacion es positiva
@@ -38,5 +40,12 @@ plot(pve , xlab=" Principal Component ", ylab="Proportion of Variance Explained 
 
 #plot de la proporcion de varianza acumulada
 plot(cumsum(pve), xlab="Principal Component ", ylab="Cumulative Proportion of Variance Explained ", ylim=c(0,1),type='b')
-# Interesa donde se forma el codo
 
+
+"Criterios para calcular la cantidad de componentes principales:
+La idea es mirar el Cumulative proportion de las dos primeras componentes 
+(o sea el segundo lugar del vector Cumulative proportion). Si ese valor es muy alto, por ejemplo 99%, 
+quiere decir que explicás casi toda la variabilidad con solo las dos componentes principales 
+que son las que aparecen después en el biplot, entonces en ese caso lo que ves en el biplot es recontra informativo, 
+sin embargo si la variabilidad explicada fuera del 50% por ejemplo, entonces el biplot no te dice tanto 
+en cuanto a las conclusiones porque estás mirando sólo dos componentes que explican apenas la mitad."
