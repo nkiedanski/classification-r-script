@@ -224,6 +224,7 @@ que deseamos predecir una disminución del mercado solo si estamos muy seguros d
 el mercado disminuirá ese día, es decir, si la probabilidad posterior es al menos el 90 %."
 sum(lda.pred$posterior[, 1] > .9)
 
+
 # ---------------------------------------------------------------------------------------------------------------------
 
 # QUADRATIC DISCRIMINAN ANALYSIS (QDA)
