@@ -9,6 +9,10 @@ trainIndex<-createDataPartition(Direction,p=0.8,list=FALSE,times=1)
 Smarket_train<-Smarket[trainIndex,]
 Smarket_test<-Smarket[-trainIndex,]
 
+# ---------------------------------------------------------------------------------------------------------------------
+
+# REGRESION LOGISTICA
+
 glm.fit<-glm(Direction~Lag1+Lag2, data = Smarket_train, family = binomial)
 
 glm.probs<-predict(glm.fit,Smarket_test,type="response")
@@ -45,6 +49,7 @@ lda_roc = roc(Smarket_test$Direction ~ lda.predict$posterior[,1], plot = TRUE, p
 
 # ---------------------------------------------------------------------------------------------------------------------
 library(ROCR)
+
 # K-NEAREST NEIGHBORS (KNN)  - no puedo hacerlo con la forma de arriba, hay una forma distica
 # ejemplo: https://rstudio-pubs-static.s3.amazonaws.com/16444_caf85a306d564eb490eebdbaf0072df2.html
 
@@ -59,7 +64,7 @@ knnPredict <- predict(knnFit,newdata = Smarket_test , type="prob")
 
 knnROC <- roc(Smarket_test$Direction, knnPredict[,"Down"], levels = levels(Smarket_test$Direction))
 
-plot(knnROC, type="S", print.thres= 0.5)
+plot(knnROC, type="S", print.thres= 0.5, print.auc = TRUE)
 
-
+#######################################################################################################################
 
