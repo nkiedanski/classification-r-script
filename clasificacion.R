@@ -141,9 +141,34 @@ mean(knn.pred != test_labels)
 # curva ROC
 ctrl <- trainControl(method="repeatedcv", repeats = 3, classProbs=TRUE, summaryFunction = twoClassSummary)
 ctrl
+#estoy centrando y escalando porque los datos que estoy usando no son los escalados
+#train y test tienen las etiquetas
 knnFit <- train(Direction ~ ., data = train, method = "knn", trControl = ctrl, preProcess = c("center","scale"), tuneLength = 20)
 knnFit
 knnPredict <- predict(knnFit, newdata = test , type="prob")
 knnROC <- roc(test$Direction, knnPredict[,"Up"], levels = levels(test$Direction))
 plot(knnROC, type="S", print.thres= 0.5, print.auc = TRUE)
+
+
+############################  SUPPORT VECTOR MACHINE (SVM)  ####################
+
+#Los kernel pueden ser: lineal/radial/polynomial/
+
+svm.fit <- svm(Direction~., data=train, method="C-classification", kernal="lineal", cost=10) #se puede elegir scale=TRUE
+
+summary(svm.fit)
+svm.fit$SV       #se visualizan los support vectors
+
+plot(svm.fit, train, Lag1~Lag2)
+"When there are more than 2 variables, it is needed to specify with are going to be ploted.
+When visualising the effect of predictor variables on the response you can specify 
+which other predictor variables are to be hold constant (i.e. at a fixed value).
+plot(svm1, train_iris, Petal.Width ~ Petal.Length, slice=list(Sepal.Width=3, Sepal.Length=4))
+So in the example, we are visualising the effect of the predictor variables Petal.Length and Petal.Width 
+on the response while keeping Sepal.Width and Sepal.Length constant at the specified values."
+
+svm.pred <- predict(svm.fit, test)
+table(svm.pred, test$Direction)
+mean(svm.pred == test$Direction)
+mean(svm.pred != test$Direction)
 
