@@ -1,3 +1,4 @@
+rm(list=ls())
 library(ISLR2)
 
 # ANALISIS DEL DATASET

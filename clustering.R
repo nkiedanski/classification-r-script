@@ -1,3 +1,4 @@
+rm(list=ls())
 library("NbClust")           #para hallar la cantidad optima de grupos
 library("factoextra")        #para extraer y visualizar output
 
@@ -47,6 +48,10 @@ Silhouette_k_optimo<-NbClust(scaled_data,
                              method="kmeans",
                              index="silhouette")
 Silhouette_k_optimo$Best.nc
+"> 0.7 fuerte
+ entre 0.5 y 0.7 razonable
+ entre 0.25 y 0.5 debil
+ < 0.25 no hay una estructura clara de grupos"
 
 "Calculo del coeficiente de Dunn"
 Dunn_k_optimo<-NbClust(scaled_data,
