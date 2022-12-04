@@ -1,5 +1,5 @@
-library("NbClust")
-library("factoextra")
+library("NbClust")           #para hallar la cantidad optima de grupos
+library("factoextra")        #para extraer y visualizar output
 
 data(LifeCycleSavings)
 summary(LifeCycleSavings)
