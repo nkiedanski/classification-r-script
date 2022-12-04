@@ -114,9 +114,9 @@ nb.preds[1:5, ]
 
 ##############################  K-NEAREST NEIGHBORS (KNN)  #####################
 
-"genero los datos de entrenamiento y testeo sin las etiquetas"
-train_knn <- Smarket[indexes,1:8]
-test_knn <- Smarket[-indexes,1:8]
+"genero los datos de entrenamiento y testeo, sin las etiquetas y ESCALADOS para KNN"
+train_knn <- scale(Smarket[indexes,1:8])  #revisar columnas
+test_knn <- scale(Smarket[-indexes,1:8])  #revisar columnas
 "genero los vectores con las etiquetas reales de los datos de train y test"
 train_labels <- Smarket[indexes,9] #poner la columna correcta
 test_labels <- Smarket[-indexes,9] #poner la columna correcta
@@ -143,7 +143,7 @@ ctrl <- trainControl(method="repeatedcv", repeats = 3, classProbs=TRUE, summaryF
 ctrl
 knnFit <- train(Direction ~ ., data = train, method = "knn", trControl = ctrl, preProcess = c("center","scale"), tuneLength = 20)
 knnFit
-knnPredict <- predict(knnFit, newdata = test_knn , type="prob")
-knnROC <- roc(test_labels, knnPredict, levels = levels(test_labels))
+knnPredict <- predict(knnFit, newdata = test , type="prob")
+knnROC <- roc(test$Direction, knnPredict[,"Up"], levels = levels(test$Direction))
 plot(knnROC, type="S", print.thres= 0.5, print.auc = TRUE)
 
