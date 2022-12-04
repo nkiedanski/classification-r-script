@@ -1,3 +1,5 @@
+rm(list=ls())
+
 library(ISLR2)       #set de datos
 library(ggplot2)     #crear graficos
 #library(lattice)    #visualizacion de datos
@@ -59,3 +61,36 @@ Si quiero predecir con valores especificos de los predictores:
 glm.probs <- (glm.fits, newdata = data.frame(variable1 = c(x1 , x2) , Lag2 = c(x1' , x2')), type = 'response')"
 
 ########################  LINEAR DISCRIMINAN ANALYSIS (LDA) ####################
+
+lda.fit <- lda(Purchase~., data=train)           #ajusto modelo
+lda.fit                                          #los coef proporcionan la comb lineal de los predictores para la regla de decisión LDA. 
+plot(lda.fit)                                    #plotear las distribuciones de los grupos
+
+
+lda.pred <- predict(lda.fit, test[,-86])         #sacar la columna que tiene los valores a predecir
+names(lda.pred)                                  #me da los outputs de lda.pred
+table(lda.pred$class,test$Purchase)
+mean(lda.pred$class == test$Purchase)
+mean(lda.pred$class != test$Purchase)
+
+lda_roc = roc(test$Purchase ~ lda.pred$posterior[,2], plot = TRUE, print.auc = TRUE ) #ROC curve
+
+"Si quiero usar un umbral de probabilidad posterior diferente al 50% para hacer predicciones:
+(ejemplo con un umbral al 90%)
+sum(lda.pred$posterior[, 2] > .9)"
+
+
+######################## QUADRATIC DISCRIMINAN ANALYSIS (QDA) ##################
+
+qda.fit <- qda(Purchase~., data = train)    #ajustar modelo
+qda.fit
+qda.pred <- predict(qda.fit, test[,-86])                       #predecir 
+
+table(qda.pred$class,test$Purchase)
+mean(qda.pred$class == test$Purchase)
+mean(qda.pred$class != test$Purchase)
+
+lda_roc = roc(test$Purchase ~ qda.pred$posterior[,2], plot = TRUE, print.auc = TRUE ) #curva ROC
+
+
+
