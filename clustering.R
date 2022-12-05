@@ -1,6 +1,7 @@
 rm(list=ls())
 library("NbClust")           #para hallar la cantidad optima de grupos
 library("factoextra")        #para extraer y visualizar output
+library(clv)                 #para calcular algunos indices
 
 data(LifeCycleSavings)
 summary(LifeCycleSavings)
@@ -26,6 +27,7 @@ resumen_k_optimo<-NbClust(scaled_data,
 "Se elige el mejor k de acuerdo a la conclusion"
 km.res <- kmeans(scaled_data, centers=2 , nstart=20) 
 km.res
+km.res$cluster
 
 "se visualiza como quedan los clusters"
 fviz_cluster(km.res,
@@ -62,6 +64,16 @@ Dunn_k_optimo<-NbClust(scaled_data,
                        index = "dunn")
 Dunn_k_optimo$Best.nc
 
+
+"para comparar el clustering verdadero con el que predice el algoritmo ( o comprar el output de 2 algoritmos)"
+#std <- std.ext(km.res$cluster, km.res$cluster)
+
+#rand1 <- clv.Rand(std)
+#print(rand1)
+#jaccard1 <- clv.Jaccard(std)
+#print(jaccard1)
+#folk.mal1 <- clv.Folkes.Mallows(std)
+#print(folk.mal1)
 
 ################################ PAM - PARTICIONAMIENTO ########################
 
