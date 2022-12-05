@@ -109,6 +109,8 @@ table(nb.class , test$Direction)
 mean(nb.class == test$Direction)
 mean(nb.class != test$Direction)
 
+nb_roc <- roc(test$Directio, as.numeric(nb.class))
+
 nb.preds <- predict(nb.fit , test, type = "raw") # prediccion, genero estimaciones de las probabilidades de cada observacion
 nb.preds[1:5, ]
 
