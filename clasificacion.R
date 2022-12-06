@@ -8,7 +8,7 @@ library(MASS)        #para las funciones de clasificacion
 library(class)       #para KNN
 library(e1071)       #para SVM y NB
 library(pROC)        #para las curvas ROC
-
+library(tree)        #para decision tree
 
 
 ########################### ANALISAR EL SET DE DATOS ###########################
@@ -123,7 +123,7 @@ test_knn <- scale(Smarket[-indexes,1:8])  #revisar columnas
 train_labels <- Smarket[indexes,9] #poner la columna correcta
 test_labels <- Smarket[-indexes,9] #poner la columna correcta
 
-
+set.seed(7)
 #el grafico debajo muestra el error de clasificacion para diferentes valores de k
 error <- c()
 for (i in 1:8)   #pruebo con k de 1 a 8
@@ -173,4 +173,25 @@ svm.pred <- predict(svm.fit, test)
 table(svm.pred, test$Direction)
 mean(svm.pred == test$Direction)
 mean(svm.pred != test$Direction)
+
+###############################  DECISION TREE  ################################
+
+
+set.seed(1000)
+"uso los mismos datos train and test"
+
+
+tree.ft <- tree(Direction~.,data=train) # Training The Model
+
+summary(tree.ft)
+plot(tree.ft)
+text(tree.ft, pretty = 0)
+
+
+tree_pred <- predict(tree.ft, newdata = test, type = "class" ) #testeando el modelo
+confusionMatrix(tree_pred, test$Direction) #cambiar diabetes por nombre etiqueta
+acc_tree.fit <- confusionMatrix(tree_pred, test$Direction)$overall['Accuracy']
+#cambiar Direction por nombre etiqueta
+acc_tree.fit #% precisión modelo
+
 

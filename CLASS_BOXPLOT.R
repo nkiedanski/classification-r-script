@@ -71,3 +71,8 @@ confusionMatrix(predictions, test$Species)
 
 dotplot(results)
 
+#se puede ver esta informacion:
+fit.knn$trainingData
+fit.knn$resample
+fit.knn$results
+fit.knn$bestTune
